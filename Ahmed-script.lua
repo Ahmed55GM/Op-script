@@ -1,5 +1,5 @@
 ------------------------------------------------
--- ADMIN PANEL GOD VERSION (FIXED)
+-- ADMIN PANEL GOD VERSION (MOBILE SUPPORT)
 ------------------------------------------------
 
 local Players = game:GetService("Players")
@@ -29,6 +29,10 @@ local walkSpeed = 16
 local flyConn, noclipConn, immortalConn, espConn, infJumpConn
 local checkpointPos = nil
 local checkpointBeam = nil
+
+-- Mobile Fly toggles
+local holdingUp = false
+local holdingDown = false
 
 ------------------------------------------------
 -- GUI SETUP
@@ -235,12 +239,50 @@ addStroke(walkBox, Color3.fromRGB(70, 70, 80), 1)
 local destroyBtn = makeButton("Destroy GUI")
 
 ------------------------------------------------
--- CP BUTTONS
+-- MOBILE FLY BUTTONS (UP & DOWN)
+------------------------------------------------
+local flyUpBtn = Instance.new("TextButton")
+flyUpBtn.Visible = false
+flyUpBtn.Size = UDim2.new(0.12, 0, 0.12, 0)
+flyUpBtn.Position = UDim2.new(0.8, 0, 0.5, 0)
+flyUpBtn.Text = "UP"
+flyUpBtn.TextScaled = true
+flyUpBtn.Font = Enum.Font.GothamBold
+flyUpBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+flyUpBtn.TextColor3 = Color3.new(1,1,1)
+flyUpBtn.Parent = gui
+Instance.new("UICorner", flyUpBtn).CornerRadius = UDim.new(0, 8)
+addStroke(flyUpBtn, Color3.fromRGB(100, 100, 255), 2)
+
+local flyDownBtn = Instance.new("TextButton")
+flyDownBtn.Visible = false
+flyDownBtn.Size = UDim2.new(0.12, 0, 0.12, 0)
+flyDownBtn.Position = UDim2.new(0.8, 0, 0.7, 0)
+flyDownBtn.Text = "DOWN"
+flyDownBtn.TextScaled = true
+flyDownBtn.Font = Enum.Font.GothamBold
+flyDownBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+flyDownBtn.TextColor3 = Color3.new(1,1,1)
+flyDownBtn.Parent = gui
+Instance.new("UICorner", flyDownBtn).CornerRadius = UDim.new(0, 8)
+addStroke(flyDownBtn, Color3.fromRGB(100, 100, 255), 2)
+
+-- Touch tracking for mobile buttons
+flyUpBtn.MouseButton1Down:Connect(function() holdingUp = true end)
+flyUpBtn.MouseButton1Up:Connect(function() holdingUp = false end)
+flyUpBtn.MouseLeave:Connect(function() holdingUp = false end)
+
+flyDownBtn.MouseButton1Down:Connect(function() holdingDown = true end)
+flyDownBtn.MouseButton1Up:Connect(function() holdingDown = false end)
+flyDownBtn.MouseLeave:Connect(function() holdingDown = false end)
+
+------------------------------------------------
+-- CP BUTTONS (Moved left so they don't overlap)
 ------------------------------------------------
 local setCP = Instance.new("TextButton")
 setCP.Visible = false
 setCP.Size = UDim2.new(0.15, 0, 0.06, 0)
-setCP.Position = UDim2.new(0.8, 0, 0.8, 0)
+setCP.Position = UDim2.new(0.05, 0, 0.8, 0)
 setCP.Text = "SET CP"
 setCP.TextScaled = true
 setCP.Font = Enum.Font.GothamBold
@@ -253,7 +295,7 @@ addStroke(setCP, Color3.fromRGB(50, 200, 50), 2)
 local tpCP = Instance.new("TextButton")
 tpCP.Visible = false
 tpCP.Size = UDim2.new(0.15, 0, 0.06, 0)
-tpCP.Position = UDim2.new(0.8, 0, 0.88, 0)
+tpCP.Position = UDim2.new(0.05, 0, 0.88, 0)
 tpCP.Text = "TP CP"
 tpCP.TextScaled = true
 tpCP.Font = Enum.Font.GothamBold
@@ -338,7 +380,7 @@ walkBox.FocusLost:Connect(function()
     end
 end)
 
--- FLY (Space=Up, Ctrl=Down)
+-- FLY (Supports Mobile UI buttons AND PC Keyboard)
 flyBtn.MouseButton1Click:Connect(function()
     if not unlocked then return end
     local char = player.Character
@@ -349,6 +391,10 @@ flyBtn.MouseButton1Click:Connect(function()
     flying = not flying
     flyBtn.Text = flying and "Fly ON" or "Fly OFF"
     flyBtn.BackgroundColor3 = flying and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(40, 40, 45)
+    
+    -- Show/Hide mobile buttons
+    flyUpBtn.Visible = flying
+    flyDownBtn.Visible = flying
 
     if flying then
         hum.PlatformStand = true
@@ -362,8 +408,13 @@ flyBtn.MouseButton1Click:Connect(function()
                 vel = cam.CFrame.RightVector * move.X + cam.CFrame.LookVector * move.Z
             end
 
-            if UIS:IsKeyDown(Enum.KeyCode.Space) then vel += Vector3.new(0, 1, 0) end
-            if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then vel -= Vector3.new(0, 1, 0) end
+            -- PC Keyboard support + Mobile Button support
+            if holdingUp or UIS:IsKeyDown(Enum.KeyCode.Space) or UIS:IsKeyDown(Enum.KeyCode.ButtonA) then 
+                vel += Vector3.new(0, 1, 0) 
+            end
+            if holdingDown or UIS:IsKeyDown(Enum.KeyCode.LeftControl) or UIS:IsKeyDown(Enum.KeyCode.ButtonL2) then 
+                vel -= Vector3.new(0, 1, 0) 
+            end
 
             hrp.AssemblyLinearVelocity = vel * flySpeed
         end)
