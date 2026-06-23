@@ -1,5 +1,5 @@
 ------------------------------------------------
--- ADMIN PANEL GOD VERSION (IMPROVED)
+-- ADMIN PANEL GOD VERSION (FIXED)
 ------------------------------------------------
 
 local Players = game:GetService("Players")
@@ -33,17 +33,19 @@ local checkpointBeam = nil
 ------------------------------------------------
 -- GUI SETUP
 ------------------------------------------------
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+local gui = Instance.new("ScreenGui")
 gui.Name = "GodAdminPanel"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
+gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Helper function for UI Strokes
 local function addStroke(parent, color, thickness)
-    local stroke = Instance.new("UIStroke", parent)
+    local stroke = Instance.new("UIStroke")
     stroke.Color = color
     stroke.Thickness = thickness
     stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Parent = parent
     return stroke
 end
 
@@ -52,7 +54,7 @@ end
 ------------------------------------------------
 local function notify(text, color)
     color = color or Color3.fromRGB(255, 255, 255)
-    local notif = Instance.new("TextLabel", gui)
+    local notif = Instance.new("TextLabel")
     notif.Size = UDim2.new(0, 300, 0, 50)
     notif.Position = UDim2.new(0.5, -150, 0, -60)
     notif.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -61,6 +63,8 @@ local function notify(text, color)
     notif.TextScaled = true
     notif.Font = Enum.Font.GothamBold
     notif.BackgroundTransparency = 0.1
+    notif.Parent = gui
+    
     addStroke(notif, color, 2)
     Instance.new("UICorner", notif).CornerRadius = UDim.new(0, 8)
     
@@ -76,12 +80,13 @@ end
 ------------------------------------------------
 -- LOCK GUI
 ------------------------------------------------
-local lock = Instance.new("Frame", gui)
+local lock = Instance.new("Frame")
 lock.Size = UDim2.new(1, 0, 1, 0)
 lock.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
 lock.BorderSizePixel = 0
+lock.Parent = gui
 
-local box = Instance.new("TextBox", lock)
+local box = Instance.new("TextBox")
 box.Size = UDim2.new(0.4, 0, 0.08, 0)
 box.Position = UDim2.new(0.3, 0, 0.4, 0)
 box.PlaceholderText = "Enter Key"
@@ -90,10 +95,11 @@ box.TextScaled = true
 box.Font = Enum.Font.GothamBold
 box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 box.TextColor3 = Color3.new(1,1,1)
+box.Parent = lock
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 addStroke(box, Color3.fromRGB(60, 60, 60), 1)
 
-local unlock = Instance.new("TextButton", lock)
+local unlock = Instance.new("TextButton")
 unlock.Size = UDim2.new(0.3, 0, 0.08, 0)
 unlock.Position = UDim2.new(0.35, 0, 0.5, 0)
 unlock.Text = "Unlock"
@@ -101,10 +107,11 @@ unlock.TextScaled = true
 unlock.Font = Enum.Font.GothamBold
 unlock.BackgroundColor3 = Color3.fromRGB(40, 120, 40)
 unlock.TextColor3 = Color3.new(1,1,1)
+unlock.Parent = lock
 Instance.new("UICorner", unlock).CornerRadius = UDim.new(0, 8)
 addStroke(unlock, Color3.fromRGB(50, 200, 50), 2)
 
-local trial = Instance.new("TextButton", lock)
+local trial = Instance.new("TextButton")
 trial.Size = UDim2.new(0.3, 0, 0.08, 0)
 trial.Position = UDim2.new(0.35, 0, 0.6, 0)
 trial.Text = "Use 60 Seconds"
@@ -112,30 +119,33 @@ trial.TextScaled = true
 trial.Font = Enum.Font.GothamBold
 trial.BackgroundColor3 = Color3.fromRGB(120, 80, 40)
 trial.TextColor3 = Color3.new(1,1,1)
+trial.Parent = lock
 Instance.new("UICorner", trial).CornerRadius = UDim.new(0, 8)
 addStroke(trial, Color3.fromRGB(200, 150, 50), 2)
 
 ------------------------------------------------
 -- ADMIN PANEL
 ------------------------------------------------
-local panel = Instance.new("Frame", gui)
+local panel = Instance.new("Frame")
 panel.Visible = false
 panel.Size = UDim2.new(0.25, 0, 0.5, 0)
 panel.Position = UDim2.new(0.02, 0, 0.25, 0)
 panel.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 panel.Active = true
 panel.Draggable = true
+panel.Parent = gui
 Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 12)
 addStroke(panel, Color3.fromRGB(100, 100, 255), 2)
 
 -- Title Bar
-local titleBar = Instance.new("Frame", panel)
+local titleBar = Instance.new("Frame")
 titleBar.Size = UDim2.new(1, 0, 0.1, 0)
 titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 titleBar.BorderSizePixel = 0
+titleBar.Parent = panel
 Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12)
 
-local title = Instance.new("TextLabel", titleBar)
+local title = Instance.new("TextLabel")
 title.Size = UDim2.new(0.8, 0, 1, 0)
 title.BackgroundTransparency = 1
 title.Text = "ADMIN PANEL"
@@ -143,9 +153,10 @@ title.TextScaled = true
 title.Font = Enum.Font.GothamBlack
 title.TextColor3 = Color3.fromRGB(100, 150, 255)
 title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = titleBar
 
 -- Minimize Button
-local minBtn = Instance.new("TextButton", titleBar)
+local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.new(0.2, 0, 1, 0)
 minBtn.Position = UDim2.new(0.8, 0, 0, 0)
 minBtn.BackgroundTransparency = 1
@@ -153,32 +164,36 @@ minBtn.Text = "-"
 minBtn.TextScaled = true
 minBtn.Font = Enum.Font.GothamBold
 minBtn.TextColor3 = Color3.new(1,1,1)
+minBtn.Parent = titleBar
 
 -- Scrolling List for Buttons
-local scrollFrame = Instance.new("ScrollingFrame", panel)
+local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, 0, 0.9, 0)
 scrollFrame.Position = UDim2.new(0, 0, 0.1, 0)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.ScrollBarThickness = 4
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scrollFrame.Parent = panel
 
-local layout = Instance.new("UIListLayout", scrollFrame)
+local layout = Instance.new("UIListLayout")
 layout.Padding = UDim.new(0, 8)
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = scrollFrame
 
 ------------------------------------------------
 -- BUTTON MAKER
 ------------------------------------------------
 local function makeButton(text)
-    local b = Instance.new("TextButton", scrollFrame)
+    local b = Instance.new("TextButton")
     b.Size = UDim2.new(0.9, 0, 0.08, 0)
     b.TextScaled = true
     b.Text = text
     b.Font = Enum.Font.GothamBold
     b.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
     b.TextColor3 = Color3.new(1,1,1)
+    b.Parent = scrollFrame
     Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
     addStroke(b, Color3.fromRGB(70, 70, 80), 1)
     return b
@@ -193,7 +208,7 @@ local immortalBtn = makeButton("Immortal OFF")
 local infJumpBtn = makeButton("Inf Jump OFF")
 local espBtn = makeButton("Player ESP OFF")
 
-local speedBox = Instance.new("TextBox", scrollFrame)
+local speedBox = Instance.new("TextBox")
 speedBox.Size = UDim2.new(0.9, 0, 0.08, 0)
 speedBox.PlaceholderText = "Fly Speed (80)"
 speedBox.Text = ""
@@ -201,10 +216,11 @@ speedBox.TextScaled = true
 speedBox.Font = Enum.Font.GothamBold
 speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
 speedBox.TextColor3 = Color3.new(1,1,1)
+speedBox.Parent = scrollFrame
 Instance.new("UICorner", speedBox).CornerRadius = UDim.new(0, 8)
 addStroke(speedBox, Color3.fromRGB(70, 70, 80), 1)
 
-local walkBox = Instance.new("TextBox", scrollFrame)
+local walkBox = Instance.new("TextBox")
 walkBox.Size = UDim2.new(0.9, 0, 0.08, 0)
 walkBox.PlaceholderText = "WalkSpeed (16)"
 walkBox.Text = ""
@@ -212,6 +228,7 @@ walkBox.TextScaled = true
 walkBox.Font = Enum.Font.GothamBold
 walkBox.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
 walkBox.TextColor3 = Color3.new(1,1,1)
+walkBox.Parent = scrollFrame
 Instance.new("UICorner", walkBox).CornerRadius = UDim.new(0, 8)
 addStroke(walkBox, Color3.fromRGB(70, 70, 80), 1)
 
@@ -220,7 +237,7 @@ local destroyBtn = makeButton("Destroy GUI")
 ------------------------------------------------
 -- CP BUTTONS
 ------------------------------------------------
-local setCP = Instance.new("TextButton", gui)
+local setCP = Instance.new("TextButton")
 setCP.Visible = false
 setCP.Size = UDim2.new(0.15, 0, 0.06, 0)
 setCP.Position = UDim2.new(0.8, 0, 0.8, 0)
@@ -229,10 +246,11 @@ setCP.TextScaled = true
 setCP.Font = Enum.Font.GothamBold
 setCP.BackgroundColor3 = Color3.fromRGB(30, 60, 30)
 setCP.TextColor3 = Color3.new(1,1,1)
+setCP.Parent = gui
 Instance.new("UICorner", setCP).CornerRadius = UDim.new(0, 8)
 addStroke(setCP, Color3.fromRGB(50, 200, 50), 2)
 
-local tpCP = Instance.new("TextButton", gui)
+local tpCP = Instance.new("TextButton")
 tpCP.Visible = false
 tpCP.Size = UDim2.new(0.15, 0, 0.06, 0)
 tpCP.Position = UDim2.new(0.8, 0, 0.88, 0)
@@ -241,6 +259,7 @@ tpCP.TextScaled = true
 tpCP.Font = Enum.Font.GothamBold
 tpCP.BackgroundColor3 = Color3.fromRGB(60, 30, 30)
 tpCP.TextColor3 = Color3.new(1,1,1)
+tpCP.Parent = gui
 Instance.new("UICorner", tpCP).CornerRadius = UDim.new(0, 8)
 addStroke(tpCP, Color3.fromRGB(200, 50, 50), 2)
 
@@ -271,13 +290,14 @@ box.FocusLost:Connect(function(enter) if enter then check() end end)
 -- 60s Trial
 trial.MouseButton1Click:Connect(function()
     enable()
-    local timer = Instance.new("TextLabel", gui)
+    local timer = Instance.new("TextLabel")
     timer.Size = UDim2.new(0.3, 0, 0.05, 0)
     timer.Position = UDim2.new(0.35, 0, 0.02, 0)
     timer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     timer.TextScaled = true
     timer.Font = Enum.Font.GothamBold
     timer.TextColor3 = Color3.new(1,1,1)
+    timer.Parent = gui
     addStroke(timer, Color3.fromRGB(200, 50, 50), 2)
     
     coroutine.wrap(function()
@@ -285,15 +305,20 @@ trial.MouseButton1Click:Connect(function()
             timer.Text = "Trial: "..i.."s"
             task.wait(1)
         end
-        local blocked = Instance.new("BoolValue", player)
+        local blocked = Instance.new("BoolValue")
         blocked.Name = "AdminBlocked"
+        blocked.Parent = player
         gui:Destroy()
     end)()
 end)
 
 -- Minimize Logic
 minBtn.MouseButton1Click:Connect(function()
-    panel:TweenSize(panel.Size == UDim2.new(0.25, 0, 0.5, 0) and UDim2.new(0.25, 0, 0.1, 0) or UDim2.new(0.25, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.3, true)
+    if panel.Size == UDim2.new(0.25, 0, 0.5, 0) then
+        panel:TweenSize(UDim2.new(0.25, 0, 0.1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.3, true)
+    else
+        panel:TweenSize(UDim2.new(0.25, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quint, 0.3, true)
+    end
 end)
 
 -- Input Boxes
@@ -404,7 +429,7 @@ infJumpConn = UIS.JumpRequest:Connect(function()
 end)
 
 -- PLAYER ESP
-espBtn.MouseButton1Click:Connect()
+espBtn.MouseButton1Click:Connect(function()
     espActive = not espActive
     espBtn.Text = espActive and "Player ESP ON" or "Player ESP OFF"
     espBtn.BackgroundColor3 = espActive and Color3.fromRGB(50, 120, 50) or Color3.fromRGB(40, 40, 45)
@@ -415,11 +440,12 @@ espBtn.MouseButton1Click:Connect()
                 if p ~= player and p.Character then
                     local hl = p.Character:FindFirstChild("ESPHighlight")
                     if not hl then
-                        hl = Instance.new("Highlight", p.Character)
+                        hl = Instance.new("Highlight")
                         hl.Name = "ESPHighlight"
                         hl.FillColor = Color3.fromRGB(255, 0, 0)
                         hl.OutlineColor = Color3.fromRGB(255, 255, 255)
                         hl.FillTransparency = 0.5
+                        hl.Parent = p.Character
                     end
                 end
             end
@@ -446,28 +472,33 @@ end)
 local function createBeam(pos)
     if checkpointBeam then checkpointBeam:Destroy() end
 
-    local base = Instance.new("Part", workspace)
+    local base = Instance.new("Part")
     base.Anchored = true
     base.Transparency = 1
     base.CanCollide = false
     base.Position = pos
+    base.Parent = workspace
 
-    local top = Instance.new("Part", workspace)
+    local top = Instance.new("Part")
     top.Anchored = true
     top.Transparency = 1
     top.CanCollide = false
     top.Position = pos + Vector3.new(0, 30, 0)
+    top.Parent = workspace
 
-    local a0 = Instance.new("Attachment", base)
-    local a1 = Instance.new("Attachment", top)
+    local a0 = Instance.new("Attachment")
+    a0.Parent = base
+    local a1 = Instance.new("Attachment")
+    a1.Parent = top
 
-    local beam = Instance.new("Beam", base)
+    local beam = Instance.new("Beam")
     beam.Attachment0 = a0
     beam.Attachment1 = a1
     beam.Width0 = 2
     beam.Width1 = 2
     beam.FaceCamera = true
     beam.Color = ColorSequence.new(Color3.fromRGB(0, 255, 120))
+    beam.Parent = base
 
     checkpointBeam = base
 end
@@ -483,7 +514,10 @@ setCP.MouseButton1Click:Connect(function()
 end)
 
 tpCP.MouseButton1Click:Connect(function()
-    if not checkpointPos then notify("No Checkpoint Set!", Color3.fromRGB(255, 50, 50)) return end
+    if not checkpointPos then 
+        notify("No Checkpoint Set!", Color3.fromRGB(255, 50, 50)) 
+        return 
+    end
     local char = player.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if hrp then
